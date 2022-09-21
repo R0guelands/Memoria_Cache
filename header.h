@@ -20,5 +20,3 @@ bool insert_item(BLOCO *cache, int number_of_lines, int associativity, int block
 void fifo(BLOCO *cache, int number_of_lines, int associativity, int block_size, long int address, int cicle);
 
 bool find_item(BLOCO *cache, int number_of_lines, int associativity, int block_size, long int address);
-
-void increment_time(BLOCO *cache, int number_of_lines, int associativity, int block_size, int cicle);

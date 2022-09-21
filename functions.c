@@ -36,17 +36,19 @@ int define_tag(int number_of_lines, int block_size, long int address) {
 
 void fifo(BLOCO *cache, int number_of_lines, int associativity, int block_size, long int address, int cicle) {
     int index = define_index(number_of_lines, block_size, address);
-    int biggest_index = 0;
+    int biggest_index = 821347982;
+    int index_to_replace = 0;
     for (int i = 0; i < associativity; i++) {
-        if (cache[index].time[i] > biggest_index) {
-            biggest_index = i;
+        if (cache[index].time[i] < biggest_index) {
+            biggest_index = cache[index].time[i];
+            index_to_replace = i;
         }
     }
-    cache[index].time[biggest_index] = 0;
-    cache[index].valid[biggest_index] = 0;
-    cache[index].tag[biggest_index] = 0;
+    cache[index].time[index_to_replace] = 0;
+    cache[index].valid[index_to_replace] = 0;
+    cache[index].tag[index_to_replace] = 0;
     for (int i = 0; i < block_size; i++) {
-        cache[index].data[biggest_index * block_size + i] = 0;
+        cache[index].data[index_to_replace * block_size + i] = 0;
     }
 }
 
@@ -78,14 +80,4 @@ bool find_item(BLOCO *cache, int number_of_lines, int associativity, int block_s
         }
     }
     return false;
-}
-
-void increment_time(BLOCO *cache, int number_of_lines, int associativity, int block_size, int cicle) {
-    for (int i = 0; i < number_of_lines; i++) {
-        for (int j = 0; j < associativity; j++) {
-            if (cache[i].valid[j] == 1) {
-                cache[i].time[j]++;
-            }
-        }
-    }
 }

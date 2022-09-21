@@ -13,7 +13,7 @@ int main(int nargs, char **args) {
     // associatividade = 8
     //
     // 32 / 2 = 16 / 8 = 2 linhas, cada uma com 8 tags e 8 bits de validade, cada tag uma com 2 blocos
-    
+
     int hits, misses;
     int total_time = 0;
     int associativity = 8;
@@ -58,11 +58,7 @@ int main(int nargs, char **args) {
 
     for (int i = 0; i < number_of_operations; i++) {
         fscanf(ptr, "%d %c %ld", &cicle, &type_of_cicle, &address);
-        // printf("%d %c %ld ", cicle, type_of_cicle, address);
-        // printf("offset: %d; ", define_offset(block_size, address));
-        // printf("index: %d; ", define_index(number_of_lines, block_size, address));
-        // printf("tag: %d\n", define_tag(number_of_lines, block_size, address));
-        
+
         if (type_of_cicle == 'R') {
             if (find_item(cache, number_of_lines, associativity, block_size, address)) {
                 hits++;
@@ -73,24 +69,18 @@ int main(int nargs, char **args) {
                     fifo(cache, number_of_lines, associativity, block_size, address, cicle);
                     insert_item(cache, number_of_lines, associativity, block_size, address, cicle);
                 }
-                total_time += time_to_access_cache;
                 total_time += time_to_read_dram;
                 total_time += time_to_access_cache;
             }
         } else if (type_of_cicle == 'W') {
             if (find_item(cache, number_of_lines, associativity, block_size, address)) {
                 hits++;
-                total_time += time_to_access_cache;
                 total_time += time_to_write_dram;
             } else {
                 misses++;
-                total_time += time_to_access_cache;
                 total_time += time_to_write_dram;
             }
         }
-
-        increment_time(cache, number_of_lines, associativity, block_size, cicle);
-
 
     }
 
