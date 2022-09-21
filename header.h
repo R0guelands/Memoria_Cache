@@ -1,11 +1,24 @@
-#include <stdbool.h>
+#include<stdbool.h>
 
-void print_cache(int size_of_cache, int size_of_block, int associatividade, int cache[size_of_cache][1 + (1 + size_of_block) * associatividade]);
+typedef struct bloco {
+    int *time;
+    int *valid;
+    int *tag;
+    int *data;
+} BLOCO;
 
-int define_line(int size_of_cache, int size_of_block, long int address);
+void print_cache(BLOCO *cache, int number_of_lines, int associativity, int block_size);\
 
-int define_block(int size_of_block, long int address);
+int define_offset(int block_size, long int address);
 
-bool is_hit(int size_of_cache, int size_of_block, int associatividade, int cache[size_of_cache][1 + (1 + size_of_block) * associatividade], int line, int block long int address);
+int define_index(int number_of_lines, int block_size, long int address);
 
-void add_to_cache(int size_of_cache, int size_of_block, int associatividade, int cache[size_of_cache][1 + (1 + size_of_block) * associatividade], int line, long int address);
+int define_tag(int number_of_lines, int block_size, long int address);
+
+bool insert_item(BLOCO *cache, int number_of_lines, int associativity, int block_size, long int address, int cicle);
+
+void fifo(BLOCO *cache, int number_of_lines, int associativity, int block_size, long int address, int cicle);
+
+bool find_item(BLOCO *cache, int number_of_lines, int associativity, int block_size, long int address);
+
+void increment_time(BLOCO *cache, int number_of_lines, int associativity, int block_size, int cicle);

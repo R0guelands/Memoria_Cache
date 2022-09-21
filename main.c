@@ -2,19 +2,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include "header.h"
-#include <stdbool.h>
+#include<stdbool.h>
 
 int main(int nargs, char **args) {
 
-    int *main_memory = (int *) malloc(1 * sizeof(int));
-    int numbers_in_main_memory = 0;
-
-
-    int associatividade = 8;
+    // EXEMPLO:
+    //
+    // cache = 32
+    // bloco = 2
+    // associatividade = 8
+    //
+    // 32 / 2 = 16 / 8 = 2 linhas, cada uma com 8 tags e 8 bits de validade, cada tag uma com 2 blocos
+    
+    int hits, misses;
+    int total_time = 0;
+    int associativity = 8;
     FILE* ptr;
-    int size_of_cache;
-    int size_of_block;
-    int time_of_access;
+
+    int cache_size;
+    int block_size;
+    int time_to_access_cache;
     int time_to_read_dram;
     int time_to_write_dram;
 
@@ -30,46 +37,67 @@ int main(int nargs, char **args) {
         exit(1);
     }
 
-    fscanf(ptr, "%d %d %d %d %d", &size_of_cache, &size_of_block, &time_of_access, &time_to_read_dram, &time_to_write_dram);
+    fscanf(ptr, "%d %d %d %d %d", &cache_size, &block_size, &time_to_access_cache, &time_to_read_dram, &time_to_write_dram);
     fscanf(ptr, "%d", &number_of_operations);
-    printf("%d %d %d %d %d\n", size_of_cache, size_of_block, time_of_access, time_to_read_dram, time_to_write_dram);
-    printf("%d\n", number_of_operations);
+    printf("%d %d %d FIFO WT WNA %d %d %d\n", cache_size, associativity, block_size, time_to_access_cache, time_to_read_dram, time_to_write_dram);
 
-    int cache[size_of_cache][1 + (1 + size_of_block) * associatividade];
+    int number_of_lines = (cache_size / block_size) / associativity;
 
-    for (int i = 0; i < size_of_cache; i++) {
-        for (int j = 0; j < 1 + (1 + size_of_block) * associatividade; j++) {
-            if (j == 0) {
-                cache[i][j] = i;
-            } else {
-                cache[i][j] = 0;
-            }
-        }
+    if (number_of_lines == 0) {
+        printf("Error: cache size is too small\n");
+        exit(1);
+    }
+    
+    BLOCO *cache = (BLOCO*) malloc(sizeof(BLOCO) * number_of_lines);
+    for (int i = 0; i < number_of_lines; i++) {
+        cache[i].time = (int*) malloc(sizeof(int) * associativity);
+        cache[i].valid = (int*) malloc(sizeof(int) * associativity);
+        cache[i].tag = (int*) malloc(sizeof(int) * associativity);
+        cache[i].data = (int*) malloc(sizeof(int) * associativity * block_size);
     }
 
     for (int i = 0; i < number_of_operations; i++) {
         fscanf(ptr, "%d %c %ld", &cicle, &type_of_cicle, &address);
-        printf("%d %c %ld  ", cicle, type_of_cicle, address);
-        printf("Line:%d; Block:%d; ", define_line(size_of_cache, size_of_block, address), define_block(size_of_block, address));
-        if (is_hit(size_of_cache, size_of_block, associatividade, cache, define_line(size_of_cache, size_of_block, address), address)) {
-            printf("hit\n");
-            if (type_of_cicle == 'W') {
-                main_memory[numbers_in_main_memory] = address;
-                numbers_in_main_memory++;
-                main_memory = (int *) realloc(main_memory, (numbers_in_main_memory + 1) * sizeof(int));
+        // printf("%d %c %ld ", cicle, type_of_cicle, address);
+        // printf("offset: %d; ", define_offset(block_size, address));
+        // printf("index: %d; ", define_index(number_of_lines, block_size, address));
+        // printf("tag: %d\n", define_tag(number_of_lines, block_size, address));
+        
+        if (type_of_cicle == 'R') {
+            if (find_item(cache, number_of_lines, associativity, block_size, address)) {
+                hits++;
+                total_time += time_to_access_cache;
+            } else {
+                misses++;
+                if (!insert_item(cache, number_of_lines, associativity, block_size, address, cicle)) {
+                    fifo(cache, number_of_lines, associativity, block_size, address, cicle);
+                    insert_item(cache, number_of_lines, associativity, block_size, address, cicle);
+                }
+                total_time += time_to_access_cache;
+                total_time += time_to_read_dram;
+                total_time += time_to_access_cache;
             }
-            
-        } else {
-            printf("miss\n");
-            if (type_of_cicle == 'W') {
-                main_memory[numbers_in_main_memory] = address;
-                numbers_in_main_memory++;
-                main_memory = (int *) realloc(main_memory, (numbers_in_main_memory + 1) * sizeof(int));
+        } else if (type_of_cicle == 'W') {
+            if (find_item(cache, number_of_lines, associativity, block_size, address)) {
+                hits++;
+                total_time += time_to_access_cache;
+                total_time += time_to_write_dram;
+            } else {
+                misses++;
+                total_time += time_to_access_cache;
+                total_time += time_to_write_dram;
             }
         }
+
+        increment_time(cache, number_of_lines, associativity, block_size, cicle);
+
+
     }
 
-    print_cache(size_of_cache, size_of_block, associatividade, cache);
+    printf("%d\n", total_time);
+    printf("%d %d\n", hits, misses);
+
+    print_cache(cache, number_of_lines, associativity, block_size);
 
     fclose(ptr);
 
