@@ -81,3 +81,13 @@ bool find_item(BLOCO *cache, int number_of_lines, int associativity, int block_s
     }
     return false;
 }
+
+void free_cache(BLOCO *cache, int number_of_lines, int associativity) {
+    for (int i = 0; i < number_of_lines; i++) {
+        free(cache[i].time);
+        free(cache[i].valid);
+        free(cache[i].tag);
+        free(cache[i].data);
+    }
+    free(cache);
+}
