@@ -30,8 +30,7 @@ int main(int nargs, char **args) {
     int cicle;
     char type_of_cicle;
     long int address;
-
-    ptr = fopen("file.txt", "r");
+    ptr = fopen(args[1], "r");
     if (ptr == NULL) {
         printf("Error opening file\n");
         exit(1);
