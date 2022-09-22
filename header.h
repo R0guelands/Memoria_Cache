@@ -6,10 +6,11 @@ typedef struct bloco {
     int *valid; // 1 if the block is valid, 0 otherwise
     int *tag; // Tag of the block
     int *data; // Data of the block, represented by an array of integers
+    int what_to_print;
 } BLOCO;
 
 // Pints the cache
-void print_cache(BLOCO *cache, int number_of_lines, int associativity, int block_size);\
+void print_cache(BLOCO *cache, int number_of_lines, int associativity, int block_size);
 
 // Defines the offset, by using the block size -1 as mask
 int define_offset(int block_size, long int address);
@@ -31,3 +32,5 @@ bool find_item(BLOCO *cache, int number_of_lines, int associativity, int block_s
 
 // Free the cache
 void free_cache(BLOCO *cache, int number_of_lines, int associativity);
+
+void print_weird(BLOCO *cache, int number_of_lines, int associativity, int block_size);

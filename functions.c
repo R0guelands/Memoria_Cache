@@ -57,6 +57,7 @@ bool insert_item(BLOCO *cache, int number_of_lines, int associativity, int block
     int tag = define_tag(number_of_lines, block_size, address);
     for (int i = 0; i < associativity; i++) {
         if (cache[index].valid[i] == 0) {
+            cache[index].what_to_print = address;
             cache[index].time[i] = cicle;
             cache[index].valid[i] = 1;
             cache[index].tag[i] = tag;
@@ -90,4 +91,17 @@ void free_cache(BLOCO *cache, int number_of_lines, int associativity) {
         free(cache[i].data);
     }
     free(cache);
+}
+
+void print_weird(BLOCO *cache, int number_of_lines, int associativity, int block_size) {
+    for (int i = 0; i < number_of_lines; i++) {
+        for (int j = 0; j < associativity; j++) {
+            if (cache[i].valid[j] == 1) {
+                printf("%d ", cache[i].what_to_print);
+            } else {
+                printf("NULL ");
+            }
+        }
+        printf("\n");
+    }
 }

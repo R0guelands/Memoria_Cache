@@ -105,7 +105,8 @@ int main(int nargs, char **args) {
     // Prints the results
     printf("%d\n", total_time);
     printf("%d %d\n", hits, misses);
-    print_cache(cache, number_of_lines, associativity, block_size);
+    printf("%d\n", number_of_lines);
+    print_weird(cache, number_of_lines, associativity, block_size);
 
     // Frees the file
     fclose(ptr);
