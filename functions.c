@@ -64,7 +64,7 @@ bool insert_item(BLOCO *cache, int number_of_lines, int associativity, int block
             cache[index].time[i] = cicle;
             cache[index].valid[i] = 1;
             cache[index].tag[i] = tag;
-            address = address & (~0 << (block_size/2));
+            address = address & (~0 << (int) log2(block_size));
             for (int j = 0; j < block_size; j++) {
                 cache[index].data[i * block_size + j] = address;
                 address++;

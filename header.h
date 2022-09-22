@@ -33,4 +33,5 @@ bool find_item(BLOCO *cache, int number_of_lines, int associativity, int block_s
 // Free the cache
 void free_cache(BLOCO *cache, int number_of_lines, int associativity);
 
+// Prints the cache but in the less pretty way
 void print_weird(BLOCO *cache, int number_of_lines, int associativity, int block_size);
