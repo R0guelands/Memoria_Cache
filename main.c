@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "header.h"
-#include<stdbool.h>
+#include <stdbool.h>
 
 int main(int nargs, char **args) {
 
@@ -26,7 +26,7 @@ int main(int nargs, char **args) {
     int time_to_read_dram;
     int time_to_write_dram;
     int number_of_operations;
-    int cicle;
+    long int cicle;
     char type_of_cicle;
     long int address;
 
@@ -54,17 +54,18 @@ int main(int nargs, char **args) {
     // Creates the cache
     BLOCO *cache = (BLOCO*) malloc(sizeof(BLOCO) * number_of_lines);
     for (int i = 0; i < number_of_lines; i++) {
-        cache[i].time = (int*) malloc(sizeof(int) * associativity);
+        cache[i].time = (long int*) malloc(sizeof(long int) * associativity);
         cache[i].valid = (int*) malloc(sizeof(int) * associativity);
-        cache[i].tag = (int*) malloc(sizeof(int) * associativity);
-        cache[i].data = (int*) malloc(sizeof(int) * associativity * block_size);
+        cache[i].tag = (long int*) malloc(sizeof(long int) * associativity);
+        cache[i].data = (long int*) malloc(sizeof(long int) * associativity * block_size);
+        cache[i].what_to_print = (long int*) malloc(sizeof(long int) * associativity);
     }
 
     // Main loop, reads the lines from the file containing the values
     for (int i = 0; i < number_of_operations; i++) {
 
         // Reads the line
-        fscanf(ptr, "%d %c %ld", &cicle, &type_of_cicle, &address);
+        fscanf(ptr, "%ld %c %ld", &cicle, &type_of_cicle, &address);
 
         // If the line is a read operation
         if (type_of_cicle == 'R') {
