@@ -9,7 +9,7 @@ typedef struct bloco {
     long int *what_to_print;
 } BLOCO;
 
-// Pints the cache
+// Prints the cache
 void print_cache(BLOCO *cache, int number_of_lines, int associativity, int block_size);
 
 // Defines the offset, by using the block size -1 as mask
